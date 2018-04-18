@@ -8,27 +8,27 @@ while(YorN.upper() != 'Y'):
     YorN = input('준비되면 Y를 입력해주세요 (Y / N)')
 
 l = createList()
-r_list = [] #AI의 추측을 저장
+prediction_list = [] #AI의 추측을 저장
 sb_list = [] #스트라이크와 볼 여부를 저장
 count = 0
 while(True):
     count += 1
-    r = model_output(l)
-    if(r is -1):
+    temp = get_evaluation(l)
+    prediction = max(temp, key = temp.get)
+    if(prediction is -1):
         answer = input('이런, AI가 답을 모르겠다고 합니다 :( 원래 무슨 숫자를 생각하셨는지 알려주세요 : ')
-        check_valid(r_list, sb_list, int(answer))
+        check_valid(prediction_list, sb_list, int(answer))
         input()
         break
-    print("\nAI 의 추측은", r, "입니다. 스트라이크와 볼 여부를 입력해주세요 : ")
+    print("\nAI 의 추측은", prediction, "입니다. 스트라이크와 볼 여부를 입력해주세요 : ")
     if(count is not 1):
-        print(sorted(l))
+        print(temp)
     result = input()
-    r_list.append(r)
+    prediction_list.append(prediction)
     sb_list.append(parseInput(result))
     if(result == '3s'):
         print("AI 가", count, "회에 정답을 맞추었습니다.")
         input()
         break
     else:
-        l = model_input(l, divide(r), parseInput(result))
-        
+        l = model_input(l, divide(prediction), parseInput(result))

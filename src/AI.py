@@ -1,5 +1,7 @@
 from random import *
 
+strikeball_list = [0, 10, 11, 12, 20]
+
 def check(number_list, guess):
     strike = 0
     ball = 0
@@ -207,3 +209,42 @@ def model_output(answerList):
             result[digit_list[i]] = pick_random_number(list(total_set))
             total_set = total_set - set(result)
         return combine(result)
+
+#------------------------------------------------------------------------------#
+
+def find_matches(strikeball, guess, answerList):
+    count = 0
+    for number in answerList:
+        if check(divide(number), guess) == strikeball:
+            count += 1
+    return count
+
+def get_biggest_matches(guess, answerList):
+    result = 0
+    global strikeball_list
+    for sb in strikeball_list:
+        temp = find_matches(sb, guess, answerList)
+        if result <= temp:
+            result = temp
+    return result
+
+def get_evaluation(answerList):
+    result_dict = dict()
+    if(len(answerList) is 0):
+        return {-1:0}
+    elif len(answerList) == 1:
+        return {answerList[0]:0}
+    elif len(answerList) == len(createList()):
+        return {pick_random_number(answerList): 0}
+    biggest_ev = 0
+    global strikeball_list
+    for number in answerList:
+        temp = evaluate(get_biggest_matches(number, answerList), len(answerList))
+        result_dict[number] = temp
+        if biggest_ev <= temp:
+            biggest_ev = temp
+    return result_dict
+
+def evaluate(x, y):
+    # TODO : user defined evaluation function. Default: xy - x^2
+    return x * (y - x)
